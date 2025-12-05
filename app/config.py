@@ -2,7 +2,8 @@
 Application configuration loaded from environment variables.
 """
 
-from typing import List
+import json
+from typing import List, Union
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -54,6 +55,26 @@ class Settings(BaseSettings):
     
     # CORS
     cors_origins: List[str] = ["*"]
+    
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        """Parse CORS origins from string or list."""
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            # Try JSON first
+            try:
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return parsed
+            except json.JSONDecodeError:
+                pass
+            # Fallback: comma-separated or single value
+            if "," in v:
+                return [origin.strip() for origin in v.split(",")]
+            return [v]
+        return ["*"]
     
     @property
     def is_production(self) -> bool:
