@@ -1,4 +1,4 @@
-# WattsTap Referral Service - Dependencies
+# WattsTap Referral Service - Production Dependencies
 
 # Web Framework
 fastapi==0.109.2
@@ -25,17 +25,3 @@ python-dotenv==1.0.1
 
 # Date/Time
 python-dateutil==2.8.2
-
-# Testing
-pytest==8.0.0
-pytest-asyncio==0.23.4
-pytest-cov==4.1.0
-httpx==0.26.0
-
-# Development
-black==24.1.1
-isort==5.13.2
-mypy==1.8.0
-
-
-
