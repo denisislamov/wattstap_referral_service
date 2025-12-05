@@ -24,7 +24,7 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
-      - key: CORS_ORIGINS
+      - key: CORS_ORIGINS_STR
         value: "*"
     healthCheckPath: /health
 

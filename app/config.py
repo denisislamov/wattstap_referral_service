@@ -3,7 +3,7 @@ Application configuration loaded from environment variables.
 """
 
 import json
-from typing import List, Union
+from typing import List
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -53,28 +53,24 @@ class Settings(BaseSettings):
     referral_bonus_watts: int = 5000
     referral_code_length: int = 8
     
-    # CORS
-    cors_origins: List[str] = ["*"]
+    # CORS - stored as string, parsed via property
+    cors_origins_str: str = "*"
     
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
-        """Parse CORS origins from string or list."""
-        if isinstance(v, list):
-            return v
-        if isinstance(v, str):
-            # Try JSON first
-            try:
-                parsed = json.loads(v)
-                if isinstance(parsed, list):
-                    return parsed
-            except json.JSONDecodeError:
-                pass
-            # Fallback: comma-separated or single value
-            if "," in v:
-                return [origin.strip() for origin in v.split(",")]
-            return [v]
-        return ["*"]
+    @property
+    def cors_origins(self) -> List[str]:
+        """Parse CORS origins from string."""
+        v = self.cors_origins_str
+        # Try JSON first
+        try:
+            parsed = json.loads(v)
+            if isinstance(parsed, list):
+                return parsed
+        except json.JSONDecodeError:
+            pass
+        # Fallback: comma-separated or single value
+        if "," in v:
+            return [origin.strip() for origin in v.split(",")]
+        return [v]
     
     @property
     def is_production(self) -> bool:
