@@ -43,7 +43,6 @@ class Settings(BaseSettings):
     # Telegram
     telegram_bot_token: str = ""
     telegram_bot_username: str = "WattsTapDevTemp_bot"
-    telegram_app_name: str = "play"
     
     # JWT
     jwt_secret: str = "change-me-in-production"
