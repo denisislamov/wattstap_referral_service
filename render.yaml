@@ -13,9 +13,9 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: APP_ENV
-        value: production
+        value: development
       - key: DEBUG
-        value: false
+        value: true
       - key: DATABASE_URL
         fromDatabase:
           name: wattstap-db
