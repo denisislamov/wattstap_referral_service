@@ -43,7 +43,7 @@ async def get_my_referral(
     stats = await referral_service.get_referral_stats(db, current_user)
     
     # Build invite link
-    invite_link = f"https://t.me/{settings.telegram_bot_username}?startattach=REF_{current_user.referral_code}"
+    invite_link = f"https://t.me/{settings.telegram_bot_username}/{settings.telegram_app_name}?startapp=REF_{current_user.referral_code}"
     
     return MyReferralResponse(
         referral_code=current_user.referral_code,
