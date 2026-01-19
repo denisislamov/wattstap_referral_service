@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     # JWT
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
-    jwt_expiration_seconds: int = 86400  # 24 hours
+    jwt_expiration_seconds: int = 0  # 0 = no expiration (token never expires)
     
     # Referral System
     referral_bonus_watts: int = 5000

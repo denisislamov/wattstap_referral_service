@@ -63,6 +63,8 @@ class User(Base):
     # Game data
     level: Mapped[int] = mapped_column(BigInteger, default=1)
     watts: Mapped[int] = mapped_column(BigInteger, default=0)
+    current_xp: Mapped[int] = mapped_column(BigInteger, default=0)
+    total_xp: Mapped[int] = mapped_column(BigInteger, default=0)
     
     # Referral system
     referral_code: Mapped[str] = mapped_column(

@@ -120,3 +120,5 @@ async def reset_friendships(db: AsyncSession = Depends(get_db)):
     await db.commit()
     
     return {"message": "All friendships and referral connections reset", "status": "ok"}
+
+

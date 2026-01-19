@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 from app import __version__
 from app.config import settings
 from app.database import init_db, close_db
-from app.routers import auth_router, social_router
+from app.routers import auth_router, social_router, progress_router
 from app.routers.dev import router as dev_router
 
 
@@ -96,6 +96,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(auth_router)
 app.include_router(social_router)
+app.include_router(progress_router)
 
 # Include dev router only in non-production
 if not settings.is_production:

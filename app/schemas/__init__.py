@@ -19,6 +19,14 @@ from app.schemas.common import (
     ErrorResponse,
     ErrorDetail,
 )
+from app.schemas.progress import (
+    PlayerProgress,
+    SaveProgressRequest,
+    SaveProgressResponse,
+    LoadProgressResponse,
+    ResetProgressRequest,
+    ResetProgressResponse,
+)
 
 __all__ = [
     # Auth
@@ -35,6 +43,13 @@ __all__ = [
     "SuccessResponse",
     "ErrorResponse",
     "ErrorDetail",
+    # Progress
+    "PlayerProgress",
+    "SaveProgressRequest",
+    "SaveProgressResponse",
+    "LoadProgressResponse",
+    "ResetProgressRequest",
+    "ResetProgressResponse",
 ]
 
 

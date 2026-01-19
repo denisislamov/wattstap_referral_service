@@ -147,3 +147,6 @@ Thumbs.db
 # Project specific
 *.db
 *.sqlite
+
+# Meta files
+*.meta

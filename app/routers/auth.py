@@ -39,9 +39,13 @@ def create_jwt_token(user_id: int, telegram_id: int) -> str:
         "sub": str(user_id),
         "telegram_id": telegram_id,
         "iat": now,
-        "exp": now + timedelta(seconds=settings.jwt_expiration_seconds),
         "type": "access"
     }
+    
+    # Only add expiration if configured (0 = no expiration)
+    if settings.jwt_expiration_seconds > 0:
+        payload["exp"] = now + timedelta(seconds=settings.jwt_expiration_seconds)
+    
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
