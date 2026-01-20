@@ -122,3 +122,62 @@ async def reset_friendships(db: AsyncSession = Depends(get_db)):
     return {"message": "All friendships and referral connections reset", "status": "ok"}
 
 
+@router.post(
+    "/reset-all-progress",
+    summary="Reset progress for all users",
+    description="Resets level, watts, current_xp, and total_xp to default values for ALL users. FOR TESTING ONLY.",
+    dependencies=[Depends(check_dev_mode)]
+)
+async def reset_all_progress(db: AsyncSession = Depends(get_db)):
+    """Reset game progress for all users to default values."""
+    
+    from sqlalchemy import update
+    
+    # Reset progress fields to defaults
+    result = await db.execute(
+        update(User).values(
+            level=1,
+            watts=0,
+            current_xp=0,
+            total_xp=0
+        )
+    )
+    
+    await db.commit()
+    
+    return {
+        "message": f"Progress reset for {result.rowcount} users",
+        "status": "ok",
+        "affected_users": result.rowcount
+    }
+
+
+@router.post(
+    "/reset-all-referrals",
+    summary="Reset referral data for all users",
+    description="Clears all friendships and referral connections, but keeps user accounts. FOR TESTING ONLY.",
+    dependencies=[Depends(check_dev_mode)]
+)
+async def reset_all_referrals(db: AsyncSession = Depends(get_db)):
+    """Reset all referral data: friendships and referred_by connections."""
+    
+    from sqlalchemy import update
+    
+    # Delete all friendships
+    friendships_result = await db.execute(delete(Friendship))
+    
+    # Reset all referred_by connections
+    users_result = await db.execute(
+        update(User).values(referred_by_id=None)
+    )
+    
+    await db.commit()
+    
+    return {
+        "message": "All referral data reset",
+        "status": "ok",
+        "friendships_deleted": friendships_result.rowcount,
+        "referral_connections_cleared": users_result.rowcount
+    }
+
+
