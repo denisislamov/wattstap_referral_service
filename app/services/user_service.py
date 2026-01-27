@@ -113,7 +113,8 @@ class UserService:
             is_premium=telegram_user.is_premium,
             referral_code=referral_code,
             watts=initial_watts,
-            level=1
+            level=1,
+            login_count=1  # First login
         )
         
         db.add(user)
@@ -154,7 +155,7 @@ class UserService:
         user: User
     ) -> User:
         """
-        Update user's last login timestamp.
+        Update user's last login timestamp and increment login count.
         
         Args:
             db: Database session
@@ -164,6 +165,7 @@ class UserService:
             Updated User object
         """
         user.last_login_at = datetime.utcnow()
+        user.login_count += 1
         await db.flush()
         return user
     

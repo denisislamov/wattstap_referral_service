@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     telegram_bot_token: str = ""
     telegram_bot_username: str = "WattsTapDevTemp_bot"
     telegram_app_name: str = "watts"
+    telegram_init_data_max_age: int = 0  # 0 = no expiration check, otherwise max age in seconds
     
     # JWT
     jwt_secret: str = "change-me-in-production"

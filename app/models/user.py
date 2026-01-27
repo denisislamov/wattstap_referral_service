@@ -32,6 +32,7 @@ class User(Base):
         
         level: Current player level
         watts: Current watts (in-game currency)
+        login_count: Number of times user has logged in
         
         referral_code: Unique code for inviting others
         referred_by_id: ID of user who invited this user
@@ -65,6 +66,7 @@ class User(Base):
     watts: Mapped[int] = mapped_column(BigInteger, default=0)
     current_xp: Mapped[int] = mapped_column(BigInteger, default=0)
     total_xp: Mapped[int] = mapped_column(BigInteger, default=0)
+    login_count: Mapped[int] = mapped_column(BigInteger, default=0)
     
     # Referral system
     referral_code: Mapped[str] = mapped_column(

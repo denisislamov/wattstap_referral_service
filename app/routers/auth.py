@@ -96,10 +96,10 @@ async def authenticate_telegram(
     
     # 3. Find existing user or create new one
     user = await user_service.get_by_telegram_id(db, telegram_user.id)
-    is_new_player = user is None
+    is_brand_new_user = user is None
     referral_result = None
     
-    if is_new_player:
+    if is_brand_new_user:
         # --- NEW USER FLOW ---
         
         # Check referral code before creating user
@@ -156,6 +156,7 @@ async def authenticate_telegram(
     token = create_jwt_token(user.id, user.telegram_id)
     
     # 5. Build response
+    # is_new_player is True only for the very first login (login_count == 1)
     return AuthResponse(
         token=token,
         expires_in=settings.jwt_expiration_seconds,
@@ -163,7 +164,7 @@ async def authenticate_telegram(
             player_id=str(user.id),
             nickname=user.display_name,
             level=user.level,
-            is_new_player=is_new_player,
+            is_new_player=user.login_count == 1,
             referral_code=user.referral_code
         ),
         referral=referral_result

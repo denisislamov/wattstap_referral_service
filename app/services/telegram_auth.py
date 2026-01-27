@@ -138,16 +138,17 @@ class TelegramAuthService:
             if not hmac.compare_digest(computed_hash, received_hash):
                 return False, "Invalid hash - data may have been tampered with"
             
-            # Verify auth_date is not too old
-            auth_date_str = parsed.get("auth_date", [None])[0]
-            if auth_date_str:
-                try:
-                    auth_date = datetime.fromtimestamp(int(auth_date_str))
-                    age = datetime.now() - auth_date
-                    if age > timedelta(seconds=max_age_seconds):
-                        return False, f"initData expired (age: {age.total_seconds()}s, max: {max_age_seconds}s)"
-                except (ValueError, TypeError):
-                    return False, "Invalid auth_date format"
+            # Verify auth_date is not too old (skip if max_age_seconds is 0)
+            if max_age_seconds > 0:
+                auth_date_str = parsed.get("auth_date", [None])[0]
+                if auth_date_str:
+                    try:
+                        auth_date = datetime.fromtimestamp(int(auth_date_str))
+                        age = datetime.now() - auth_date
+                        if age > timedelta(seconds=max_age_seconds):
+                            return False, f"initData expired (age: {age.total_seconds()}s, max: {max_age_seconds}s)"
+                    except (ValueError, TypeError):
+                        return False, "Invalid auth_date format"
             
             return True, None
             
@@ -208,18 +209,22 @@ class TelegramAuthService:
     def validate_and_parse(
         self, 
         init_data: str,
-        max_age_seconds: int = 86400
+        max_age_seconds: Optional[int] = None
     ) -> Tuple[Optional[ParsedInitData], Optional[str]]:
         """
         Validate and parse initData in one call.
         
         Args:
             init_data: Raw initData string from Telegram
-            max_age_seconds: Maximum age of initData in seconds
+            max_age_seconds: Maximum age of initData in seconds (None = use config setting)
             
         Returns:
             Tuple of (ParsedInitData or None, error_message or None)
         """
+        # Use config setting if not specified
+        if max_age_seconds is None:
+            max_age_seconds = settings.telegram_init_data_max_age
+        
         # First validate
         is_valid, error = self.validate_init_data(init_data, max_age_seconds)
         if not is_valid:
