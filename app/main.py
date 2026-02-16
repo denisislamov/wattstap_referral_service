@@ -16,6 +16,7 @@ from app.database import init_db, close_db
 from app.routers import auth_router, social_router, progress_router
 from app.routers.dev import router as dev_router
 from app.routers.mining_balance import router as mining_balance_router
+from app.routers.admin import router as admin_router
 
 
 async def _seed_mining_balance():
@@ -133,6 +134,7 @@ app.include_router(auth_router)
 app.include_router(social_router)
 app.include_router(progress_router)
 app.include_router(mining_balance_router)
+app.include_router(admin_router)
 
 # Include dev router only in non-production
 if not settings.is_production:
