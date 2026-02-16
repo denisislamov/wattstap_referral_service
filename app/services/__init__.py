@@ -6,6 +6,7 @@ from app.services.telegram_auth import TelegramAuthService, telegram_auth_servic
 from app.services.user_service import UserService, user_service
 from app.services.referral_service import ReferralService, referral_service
 from app.services.progress_service import ProgressService, progress_service
+from app.services.mining_balance_service import MiningBalanceService, mining_balance_service
 
 __all__ = [
     "TelegramAuthService",
@@ -16,6 +17,8 @@ __all__ = [
     "referral_service",
     "ProgressService",
     "progress_service",
+    "MiningBalanceService",
+    "mining_balance_service",
 ]
 
 

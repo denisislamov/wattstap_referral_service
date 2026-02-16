@@ -14,7 +14,7 @@ from alembic import context
 # Import your models and config
 from app.config import settings
 from app.database import Base
-from app.models import User, Friendship  # noqa: F401 - Import to register models
+from app.models import User, Friendship, MiningBalanceParams, MiningBalanceDailyProgression  # noqa: F401 - Import to register models
 
 # Alembic Config object
 config = context.config

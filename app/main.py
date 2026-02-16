@@ -15,6 +15,38 @@ from app.config import settings
 from app.database import init_db, close_db
 from app.routers import auth_router, social_router, progress_router
 from app.routers.dev import router as dev_router
+from app.routers.mining_balance import router as mining_balance_router
+
+
+async def _seed_mining_balance():
+    """Seed mining balance from bundled CSV if the DB is empty."""
+    import os
+    from app.database import async_session_maker
+    from app.services.mining_balance_service import mining_balance_service
+
+    csv_candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "data", "WattsBalanceMining.csv"),
+        "data/WattsBalanceMining.csv",
+    ]
+    csv_path = None
+    for candidate in csv_candidates:
+        abs_path = os.path.abspath(candidate)
+        if os.path.exists(abs_path):
+            csv_path = abs_path
+            break
+
+    if not csv_path:
+        print("[MiningBalance] CSV file not found — skipping seed")
+        return
+
+    async with async_session_maker() as session:
+        try:
+            success, message, days = await mining_balance_service.seed_from_csv_file(
+                session, csv_path, version="default", force=False
+            )
+            print(f"[MiningBalance] {message}")
+        except Exception as e:
+            print(f"[MiningBalance] Seed error: {e}")
 
 
 @asynccontextmanager
@@ -31,6 +63,9 @@ async def lifespan(app: FastAPI):
     
     await init_db()
     print("Database initialized")
+    
+    # Seed mining balance from CSV if not already present
+    await _seed_mining_balance()
     
     yield
     
@@ -97,6 +132,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(auth_router)
 app.include_router(social_router)
 app.include_router(progress_router)
+app.include_router(mining_balance_router)
 
 # Include dev router only in non-production
 if not settings.is_production:

@@ -27,6 +27,15 @@ from app.schemas.progress import (
     ResetProgressRequest,
     ResetProgressResponse,
 )
+from app.schemas.mining_balance import (
+    MiningBalanceResponse,
+    MiningBalancePublicResponse,
+    MiningBalanceAdminResponse,
+    MiningBalanceUpdateRequest,
+    MiningBalanceSeedResponse,
+    DailyProgressionItem,
+    DailyProgressionCreate,
+)
 
 __all__ = [
     # Auth
@@ -50,6 +59,14 @@ __all__ = [
     "LoadProgressResponse",
     "ResetProgressRequest",
     "ResetProgressResponse",
+    # Mining Balance
+    "MiningBalanceResponse",
+    "MiningBalancePublicResponse",
+    "MiningBalanceAdminResponse",
+    "MiningBalanceUpdateRequest",
+    "MiningBalanceSeedResponse",
+    "DailyProgressionItem",
+    "DailyProgressionCreate",
 ]
 
 
