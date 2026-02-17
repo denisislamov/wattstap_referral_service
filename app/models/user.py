@@ -68,6 +68,10 @@ class User(Base):
     total_xp: Mapped[int] = mapped_column(BigInteger, default=0)
     login_count: Mapped[int] = mapped_column(BigInteger, default=0)
     
+    # Avatars (comma-separated list of unlocked avatar IDs, and current equipped avatar)
+    unlocked_avatars: Mapped[str] = mapped_column(String(4096), default="", nullable=False)
+    current_avatar: Mapped[str] = mapped_column(String(255), default="telegram_avatar", nullable=False)
+    
     # Referral system
     referral_code: Mapped[str] = mapped_column(
         String(16), 

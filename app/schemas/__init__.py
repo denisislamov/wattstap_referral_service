@@ -36,6 +36,13 @@ from app.schemas.mining_balance import (
     DailyProgressionItem,
     DailyProgressionCreate,
 )
+from app.schemas.avatar import (
+    PurchaseAvatarRequest,
+    PurchaseAvatarResponse,
+    UnlockAvatarByLevelRequest,
+    UnlockAvatarByLevelResponse,
+    GetAvatarsResponse,
+)
 
 __all__ = [
     # Auth
@@ -67,6 +74,12 @@ __all__ = [
     "MiningBalanceSeedResponse",
     "DailyProgressionItem",
     "DailyProgressionCreate",
+    # Avatars
+    "PurchaseAvatarRequest",
+    "PurchaseAvatarResponse",
+    "UnlockAvatarByLevelRequest",
+    "UnlockAvatarByLevelResponse",
+    "GetAvatarsResponse",
 ]
 
 
