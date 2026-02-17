@@ -9,8 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.models.user import User
 from app.models.friendship import Friendship
+from app.schemas.progress import AddResourcesRequest, AddResourcesResponse
+from app.services.progress_service import progress_service
 
 router = APIRouter(prefix="/dev", tags=["Development"])
 
@@ -179,5 +182,49 @@ async def reset_all_referrals(db: AsyncSession = Depends(get_db)):
         "friendships_deleted": friendships_result.rowcount,
         "referral_connections_cleared": users_result.rowcount
     }
+
+
+@router.post(
+    "/add-resources",
+    response_model=AddResourcesResponse,
+    summary="Add XP and/or watts to current player",
+    description="""
+    Debug endpoint to add XP and/or watts to the authenticated player.
+    
+    Both values must be non-negative. At least one must be greater than 0.
+    XP is added to both current_xp and total_xp.
+    Watts are added directly to the balance.
+    
+    Requires authentication (JWT token).
+    """,
+    dependencies=[Depends(check_dev_mode)]
+)
+async def add_resources(
+    request: AddResourcesRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> AddResourcesResponse:
+    """Add XP and/or watts to the current authenticated player."""
+    
+    success, progress, added_watts, added_xp, message = await progress_service.add_resources(
+        db=db,
+        user=current_user,
+        watts=request.watts,
+        xp=request.xp
+    )
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message
+        )
+    
+    return AddResourcesResponse(
+        success=success,
+        progress=progress,
+        addedWatts=added_watts,
+        addedXp=added_xp,
+        message=message
+    )
 
 

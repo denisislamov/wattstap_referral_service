@@ -120,6 +120,59 @@ class ProgressService:
         except Exception as e:
             return False, self.get_progress(user), f"Failed to reset progress: {str(e)}"
     
+    async def add_resources(
+        self,
+        db: AsyncSession,
+        user: User,
+        watts: int = 0,
+        xp: int = 0
+    ) -> Tuple[bool, "PlayerProgress", int, int, str]:
+        """
+        Add watts and/or XP to a player (debug operation).
+        
+        Properly updates both current_xp and total_xp.
+        Watts and XP can only be added (non-negative).
+        
+        Args:
+            db: Database session
+            user: User to update
+            watts: Amount of watts to add (>= 0)
+            xp: Amount of XP to add (>= 0)
+            
+        Returns:
+            Tuple of (success, progress, added_watts, added_xp, message)
+        """
+        try:
+            if watts < 0 or xp < 0:
+                return False, self.get_progress(user), 0, 0, "Cannot add negative amounts"
+            
+            if watts == 0 and xp == 0:
+                return False, self.get_progress(user), 0, 0, "No resources to add (both watts and xp are 0)"
+            
+            # Add watts
+            user.watts += watts
+            
+            # Add XP: update both current and total
+            user.current_xp += xp
+            user.total_xp += xp
+            
+            await db.flush()
+            await db.refresh(user)
+            
+            progress = self.get_progress(user)
+            
+            parts = []
+            if watts > 0:
+                parts.append(f"+{watts} watts")
+            if xp > 0:
+                parts.append(f"+{xp} XP")
+            message = f"Added {', '.join(parts)} to player"
+            
+            return True, progress, watts, xp, message
+            
+        except Exception as e:
+            return False, self.get_progress(user), 0, 0, f"Failed to add resources: {str(e)}"
+    
     def is_new_player(self, user: User) -> bool:
         """
         Check if user is a new player (no progress saved).

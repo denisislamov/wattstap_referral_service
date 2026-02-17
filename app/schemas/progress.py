@@ -77,3 +77,28 @@ class ResetProgressResponse(BaseModel):
         "populate_by_name": True,
     }
 
+
+class AddResourcesRequest(BaseModel):
+    """Request to add XP and/or watts to a player (debug)."""
+    
+    watts: int = Field(0, ge=0, description="Amount of watts to add")
+    xp: int = Field(0, ge=0, description="Amount of XP to add")
+    
+    model_config = {
+        "populate_by_name": True,
+    }
+
+
+class AddResourcesResponse(BaseModel):
+    """Response after adding resources."""
+    
+    success: bool = Field(..., description="Whether the operation was successful")
+    progress: PlayerProgress = Field(..., description="Updated progress data")
+    added_watts: int = Field(..., alias="addedWatts", description="Amount of watts actually added")
+    added_xp: int = Field(..., alias="addedXp", description="Amount of XP actually added")
+    message: str = Field(..., description="Status message")
+    
+    model_config = {
+        "populate_by_name": True,
+    }
+
